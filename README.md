@@ -15,7 +15,7 @@
 
 ## ❓ How to Install
 
-1. Download the latest `.phar` from the [Releases](https://github.com/YourUsername/MemoryPulse/releases) page or [Poggit](https://poggit.pmmp.io/p/MemoryPulse).  
+1. Download the latest `.phar` from the [Releases](https://github.com/Estem01/MemoryPulse/releases) page or [Poggit](https://poggit.pmmp.io/p/MemoryPulse).  
 2. Place the `.phar` file in your server's `plugins` folder.  
 3. Start or restart your server to generate the `config.yml`.  
 4. Edit `config.yml` in `plugins/MemoryPulse` to configure optimization settings.  
@@ -36,7 +36,7 @@
 
 ## 📜 Versions
 
-- **Version 1.0.0** (March 28, 2025)  
+- **Version 1.0.0**
   - Initial release with advanced memory and syscall optimization.  
   - Compatible with PocketMine-MP API 5.0.0.  
 
@@ -93,28 +93,28 @@ logger: false
 ## ⭐ Join Our Community
 
 Get support, updates, and share your ideas on our Discord server!  
-👉 **[Discord](https://discord.gg/your-discord-invite)** *(Replace with your Discord link)*  
+👉 **[Discord](https://discord.gg/your-discord-invite)** 
 
 ---
 
 ## 🛠️ Contributing
 
 Want to improve MemoryPulse?  
-- Report bugs or suggest features in the [Issues](https://github.com/YourUsername/MemoryPulse/issues) tab.  
-- Submit code enhancements via [Pull Requests](https://github.com/YourUsername/MemoryPulse/pulls).  
+- Report bugs or suggest features in the [Issues](https://github.com/Estem01/MemoryPulse/issues) tab.  
+- Submit code enhancements via [Pull Requests](https://github.com/Estem01/MemoryPulse/pulls).  
 
-Check the [commits](https://github.com/YourUsername/MemoryPulse/commits/main) for the latest changes!
+Check the [commits](https://github.com/Estem01/MemoryPulse/commits/main) for the latest changes!
 
 ---
 
 ## 📝 License
 
-This project is licensed under the [MIT License](https://github.com/YourUsername/MemoryPulse/blob/main/LICENSE).  
+This project is licensed under the [Apache License](https://github.com/Estem01/MemoryPulse/blob/main/LICENSE).  
 
 ---
 
 ## 👥 Authors
 
-- [YourUsername](https://github.com/YourUsername) *(Replace with your GitHub username)*  
+- [Estem01](https://github.com/Estem01)
 
 ---
