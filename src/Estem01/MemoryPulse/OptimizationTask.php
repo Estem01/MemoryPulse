@@ -1,6 +1,6 @@
 <?php
 
-namespace MemoryPulse;
+namespace Estem01\MemoryPulse;
 
 use pocketmine\scheduler\Task;
 
