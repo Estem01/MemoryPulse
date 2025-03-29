@@ -4,7 +4,8 @@ namespace Estem01\MemoryPulse;
 
 use pocketmine\plugin\PluginBase;
 use pocketmine\utils\Config;
-use MemoryPulse\Events\PulseEvent;
+use Estem01\MemoryPulse\Events\PulseEvent;
+use Estem01\MemoryPulse\OptimizationTask;
 
 class Main extends PluginBase {
     private Config $config;
@@ -23,7 +24,7 @@ class Main extends PluginBase {
         $this->pulseEvent = new PulseEvent($this);
         $this->getServer()->getPluginManager()->registerEvents($this->pulseEvent, $this);
 
-        $interval = max(10, $this->config->get("interval", 60));
+        $interval = max(10, (int) $this->config->get("interval", 60)); // Cast to int
         $this->getScheduler()->scheduleRepeatingTask(new OptimizationTask($this->pulseEvent), $interval * 20);
     }
 
