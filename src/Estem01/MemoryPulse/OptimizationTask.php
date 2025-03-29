@@ -3,6 +3,7 @@
 namespace Estem01\MemoryPulse;
 
 use pocketmine\scheduler\Task;
+use Estem01\MemoryPulse\Events\PulseEvent;
 
 class OptimizationTask extends Task {
     private PulseEvent $pulseEvent;
