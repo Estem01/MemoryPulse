@@ -1,16 +1,16 @@
 # Enable or disable the plugin
 enabled: true
 
-# Base optimization interval in seconds
+# Base optimization interval in seconds (will be dynamically adjusted)
 interval: 60
 
-# Base memory buffer size in bytes
+# Base memory buffer size in bytes (will be dynamically adjusted)
 buffer-size: 1048576  # 1MB
 
-# Memory threshold in MB for aggressive optimization
+# Initial memory threshold in MB (will adapt)
 memory-threshold: 100
 
-# Packet rate threshold (packets per second)
+# Initial packet rate threshold (packets per second, will adapt)
 packet-threshold: 50
 
 # Default memory advice type (MADV_DONTNEED, MADV_WILLNEED, MADV_SEQUENTIAL, MADV_RANDOM)
