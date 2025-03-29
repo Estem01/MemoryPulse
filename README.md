@@ -93,7 +93,7 @@ logger: false
 ## ⭐ Join Our Community
 
 Get support, updates, and share your ideas on our Discord server!  
-👉 **[Discord](https://discord.gg/your-discord-invite)** 
+👉 **[Discord](https://discord.gg/F8cdegZh)** 
 
 ---
 
