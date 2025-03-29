@@ -1,6 +1,6 @@
 <?php
 
-namespace MemoryPulse\Events;
+namespace Estem01\MemoryPulse\Events;
 
 use MemoryPulse\Main;
 use pocketmine\event\Listener;
