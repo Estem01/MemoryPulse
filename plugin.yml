@@ -3,7 +3,7 @@ api: [5.0.0]
 version: 1.0.0
 main: MemoryPulse\Main
 description: "A plugin that dynamically optimizes server memory and packet handling."
-author: Estem0
+author: Estem01
 
 permissions:
   memorypulse.bypass:
