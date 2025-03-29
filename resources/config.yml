@@ -1,0 +1,23 @@
+# Enable or disable the plugin
+enabled: true
+
+# Base optimization interval in seconds
+interval: 60
+
+# Base memory buffer size in bytes
+buffer-size: 1048576  # 1MB
+
+# Memory threshold in MB for aggressive optimization
+memory-threshold: 100
+
+# Packet rate threshold (packets per second)
+packet-threshold: 50
+
+# Default memory advice type (MADV_DONTNEED, MADV_WILLNEED, MADV_SEQUENTIAL, MADV_RANDOM)
+default-madvise: "MADV_DONTNEED"
+
+# Enable OPcache reset if available
+opcache-reset: true
+
+# Enable plugin logger
+logger: false
