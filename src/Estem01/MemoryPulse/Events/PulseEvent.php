@@ -10,7 +10,7 @@ use SplFileObject;
 class PulseEvent implements Listener {
     private Main $main;
     private array $config;
-    private ?SplFileObject $memoryBuffer = null; // Nullable type
+    private ?SplFileObject $memoryBuffer = null;
     private int $packetCount = 0;
     private int $dynamicBufferSize;
     private array $memoryQueue = [];
@@ -23,14 +23,14 @@ class PulseEvent implements Listener {
     public function __construct(Main $main) {
         $this->main = $main;
         $this->config = $main->getPluginConfig()->getAll();
-        $this->dynamicBufferSize = max(1024, (int) ($this->config["buffer-size"] ?? 1048576)); // Cast to int
-        $this->dynamicInterval = max(10, (int) ($this->config["interval"] ?? 60)); // Cast to int
+        $this->dynamicBufferSize = max(1024, (int) ($this->config["buffer-size"] ?? 1048576));
+        $this->dynamicInterval = max(10, (int) ($this->config["interval"] ?? 60));
         $this->lastTickTime = microtime(true);
         $this->initMemoryBuffer();
     }
 
     public function onPacketSend(DataPacketSendEvent $event): void {
-        if (!$this->config["enabled"]) { // Removed ?? as config is always an array
+        if (!$this->config["enabled"]) {
             return;
         }
 
@@ -41,7 +41,7 @@ class PulseEvent implements Listener {
         $this->memcpySimulated($packetData, $offset);
         $this->updateMetrics();
 
-        if ($this->config["logger"]) { // Removed ?? as config["logger"] defaults to false
+        if ($this->config["logger"]) {
             $this->main->getLogger()->info("Packet processed (Total: {$this->packetCount})");
         }
     }
@@ -92,14 +92,14 @@ class PulseEvent implements Listener {
         $packetRate = $this->packetCount / max(1, $tickDelta);
 
         $alpha = 0.1; // Smoothing factor
-        $this->memoryUsageAvg = $this->memoryUsageAvg === 0 ? $memoryUsage : ($alpha * $memoryUsage + (1 - $alpha) * $this->memoryUsageAvg);
-        $this->packetRateAvg = $this->packetRateAvg === 0 ? $packetRate : ($alpha * $packetRate + (1 - $alpha) * $this->packetRateAvg);
+        $this->memoryUsageAvg = $this->memoryUsageAvg == 0 ? $memoryUsage : ($alpha * $memoryUsage + (1 - $alpha) * $this->memoryUsageAvg);
+        $this->packetRateAvg = $this->packetRateAvg == 0 ? $packetRate : ($alpha * $packetRate + (1 - $alpha) * $this->packetRateAvg);
     }
 
     // Adjust dynamic settings with feedback mechanism
     public function adjustDynamicSettings(): void {
-        $memoryThreshold = (float) ($this->config["memory-threshold"] ?? 100); // Cast to float
-        $packetThreshold = (float) ($this->config["packet-threshold"] ?? 50); // Cast to float
+        $memoryThreshold = (float) ($this->config["memory-threshold"] ?? 100);
+        $packetThreshold = (float) ($this->config["packet-threshold"] ?? 50);
 
         $memoryFactor = $this->memoryUsageAvg / $memoryThreshold;
         $packetFactor = $this->packetRateAvg / $packetThreshold;
@@ -256,5 +256,10 @@ class PulseEvent implements Listener {
 
     public function getOptimizationImpact(): float {
         return $this->optimizationImpact;
+    }
+
+    // Added public method to access $main
+    public function getMain(): Main {
+        return $this->main;
     }
 }
