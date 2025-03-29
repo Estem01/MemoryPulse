@@ -2,7 +2,7 @@
 
 namespace Estem01\MemoryPulse\Events;
 
-use MemoryPulse\Main;
+use Estem01\MemoryPulse\Main;
 use pocketmine\event\Listener;
 use pocketmine\event\server\DataPacketSendEvent;
 use SplFileObject;
@@ -10,27 +10,27 @@ use SplFileObject;
 class PulseEvent implements Listener {
     private Main $main;
     private array $config;
-    private $memoryBuffer = null;
-    private $packetCount = 0;
-    private $dynamicBufferSize;
-    private $memoryQueue = [];
-    private $lastTickTime = 0;
-    private $memoryUsageAvg = 0;
-    private $packetRateAvg = 0;
-    private $dynamicInterval = 0;
-    private $optimizationImpact = 0;
+    private ?SplFileObject $memoryBuffer = null; // Nullable type
+    private int $packetCount = 0;
+    private int $dynamicBufferSize;
+    private array $memoryQueue = [];
+    private float $lastTickTime = 0;
+    private float $memoryUsageAvg = 0;
+    private float $packetRateAvg = 0;
+    private int $dynamicInterval = 0;
+    private float $optimizationImpact = 0;
 
     public function __construct(Main $main) {
         $this->main = $main;
         $this->config = $main->getPluginConfig()->getAll();
-        $this->dynamicBufferSize = max(1024, $this->config["buffer-size"] ?? 1048576);
-        $this->dynamicInterval = max(10, $this->config["interval"] ?? 60);
+        $this->dynamicBufferSize = max(1024, (int) ($this->config["buffer-size"] ?? 1048576)); // Cast to int
+        $this->dynamicInterval = max(10, (int) ($this->config["interval"] ?? 60)); // Cast to int
         $this->lastTickTime = microtime(true);
         $this->initMemoryBuffer();
     }
 
     public function onPacketSend(DataPacketSendEvent $event): void {
-        if (!$this->config["enabled"] ?? true) {
+        if (!$this->config["enabled"]) { // Removed ?? as config is always an array
             return;
         }
 
@@ -41,7 +41,7 @@ class PulseEvent implements Listener {
         $this->memcpySimulated($packetData, $offset);
         $this->updateMetrics();
 
-        if ($this->config["logger"] ?? false) {
+        if ($this->config["logger"]) { // Removed ?? as config["logger"] defaults to false
             $this->main->getLogger()->info("Packet processed (Total: {$this->packetCount})");
         }
     }
@@ -52,7 +52,7 @@ class PulseEvent implements Listener {
             $this->memoryBuffer = new SplFileObject("php://memory", "r+");
             $this->memoryBuffer->fwrite(str_repeat("\0", $this->dynamicBufferSize));
             $this->memoryQueue[] = ['size' => $this->dynamicBufferSize, 'timestamp' => microtime(true)];
-            if ($this->config["logger"] ?? false) {
+            if ($this->config["logger"]) {
                 $this->main->getLogger()->info("Memory buffer initialized: " . ($this->dynamicBufferSize / 1024 / 1024) . "MB");
             }
         } catch (\Exception $e) {
@@ -67,7 +67,7 @@ class PulseEvent implements Listener {
             unset($this->memoryBuffer);
             gc_collect_cycles();
             $this->memoryBuffer = null;
-            if ($this->config["logger"] ?? false) {
+            if ($this->config["logger"]) {
                 $this->main->getLogger()->info("Memory buffer released.");
             }
         }
@@ -98,8 +98,8 @@ class PulseEvent implements Listener {
 
     // Adjust dynamic settings with feedback mechanism
     public function adjustDynamicSettings(): void {
-        $memoryThreshold = $this->config["memory-threshold"] ?? 100;
-        $packetThreshold = $this->config["packet-threshold"] ?? 50;
+        $memoryThreshold = (float) ($this->config["memory-threshold"] ?? 100); // Cast to float
+        $packetThreshold = (float) ($this->config["packet-threshold"] ?? 50); // Cast to float
 
         $memoryFactor = $this->memoryUsageAvg / $memoryThreshold;
         $packetFactor = $this->packetRateAvg / $packetThreshold;
@@ -108,14 +108,14 @@ class PulseEvent implements Listener {
         // Dynamic buffer size adjustment
         $newBufferSize = max(
             1024,
-            (int)(($this->config["buffer-size"] ?? 1048576) * (1 + $loadFactor * 0.5 * (1 - $this->optimizationImpact)))
+            (int) (($this->config["buffer-size"] ?? 1048576) * (1 + $loadFactor * 0.5 * (1 - $this->optimizationImpact)))
         );
 
         if (abs($newBufferSize - $this->dynamicBufferSize) > 1024) {
             $this->dynamicBufferSize = $newBufferSize;
             $this->releaseMemoryBuffer();
             $this->initMemoryBuffer();
-            if ($this->config["logger"] ?? false) {
+            if ($this->config["logger"]) {
                 $this->main->getLogger()->info("Buffer adjusted to " . ($this->dynamicBufferSize / 1024 / 1024) . "MB.");
             }
         }
@@ -123,12 +123,12 @@ class PulseEvent implements Listener {
         // Dynamic interval adjustment
         $newInterval = max(
             10,
-            (int)(($this->config["interval"] ?? 60) / (1 + $loadFactor * (1 + $this->optimizationImpact)))
+            (int) (($this->config["interval"] ?? 60) / (1 + $loadFactor * (1 + $this->optimizationImpact)))
         );
 
         if (abs($newInterval - $this->dynamicInterval) > 5) {
             $this->dynamicInterval = $newInterval;
-            if ($this->config["logger"] ?? false) {
+            if ($this->config["logger"]) {
                 $this->main->getLogger()->info("Optimization interval adjusted to " . $this->dynamicInterval . "s.");
             }
         }
@@ -136,7 +136,7 @@ class PulseEvent implements Listener {
 
     // Optimize memory with dynamic syscall simulation
     public function optimizeMemory(): void {
-        if (!$this->config["enabled"] ?? true) {
+        if (!$this->config["enabled"]) {
             return;
         }
 
@@ -144,11 +144,14 @@ class PulseEvent implements Listener {
         $this->adjustDynamicSettings();
 
         $madviseType = $this->config["default-madvise"] ?? "MADV_DONTNEED";
-        if ($this->memoryUsageAvg > ($this->config["memory-threshold"] ?? 100) * 1.5) {
+        $memoryThreshold = (float) ($this->config["memory-threshold"] ?? 100);
+        $packetThreshold = (float) ($this->config["packet-threshold"] ?? 50);
+
+        if ($this->memoryUsageAvg > $memoryThreshold * 1.5) {
             $madviseType = "MADV_DONTNEED";
-        } elseif ($this->packetRateAvg > ($this->config["packet-threshold"] ?? 50)) {
+        } elseif ($this->packetRateAvg > $packetThreshold) {
             $madviseType = "MADV_SEQUENTIAL";
-        } elseif ($this->memoryUsageAvg < ($this->config["memory-threshold"] ?? 100) * 0.5) {
+        } elseif ($this->memoryUsageAvg < $memoryThreshold * 0.5) {
             $madviseType = "MADV_WILLNEED";
         }
 
@@ -158,9 +161,9 @@ class PulseEvent implements Listener {
         gc_collect_cycles();
         gc_mem_caches();
 
-        if ($this->config["opcache-reset"] ?? true && function_exists('opcache_reset') && ini_get('opcache.enable')) {
+        if ($this->config["opcache-reset"] && function_exists('opcache_reset') && ini_get('opcache.enable')) {
             opcache_reset();
-            if ($this->config["logger"] ?? false) {
+            if ($this->config["logger"]) {
                 $this->main->getLogger()->info("OPcache reset performed.");
             }
         }
@@ -176,38 +179,38 @@ class PulseEvent implements Listener {
             return;
         }
 
-        $chunkSize = max(64, min(1024, (int)($this->dynamicBufferSize / 1024))); // Dynamic chunk size
+        $chunkSize = max(64, min(1024, (int) ($this->dynamicBufferSize / 1024))); // Dynamic chunk size
 
         switch ($advice) {
             case "MADV_DONTNEED":
                 $this->releaseMemoryBuffer();
                 $this->initMemoryBuffer();
-                if ($this->config["logger"] ?? false) {
+                if ($this->config["logger"]) {
                     $this->main->getLogger()->info("MADV_DONTNEED: Buffer reset.");
                 }
                 break;
             case "MADV_WILLNEED":
                 $this->memoryBuffer->fseek(0);
                 $this->memoryBuffer->fread($chunkSize);
-                if ($this->config["logger"] ?? false) {
+                if ($this->config["logger"]) {
                     $this->main->getLogger()->info("MADV_WILLNEED: Buffer prioritized with chunk size $chunkSize.");
                 }
                 break;
             case "MADV_SEQUENTIAL":
                 $this->memoryBuffer->fseek(0);
-                $steps = (int)($this->dynamicBufferSize / $chunkSize / 4);
+                $steps = (int) ($this->dynamicBufferSize / $chunkSize / 4);
                 for ($i = 0; $i < $steps; $i++) {
                     $this->memoryBuffer->fseek($i * $chunkSize * 4);
                     $this->memoryBuffer->fwrite(str_repeat("S", $chunkSize));
                 }
-                if ($this->config["logger"] ?? false) {
+                if ($this->config["logger"]) {
                     $this->main->getLogger()->info("MADV_SEQUENTIAL: Sequential optimization with chunk size $chunkSize.");
                 }
                 break;
             case "MADV_RANDOM":
                 $this->memoryBuffer->fseek(rand(0, $this->dynamicBufferSize - 1));
                 $this->memoryBuffer->fread($chunkSize);
-                if ($this->config["logger"] ?? false) {
+                if ($this->config["logger"]) {
                     $this->main->getLogger()->info("MADV_RANDOM: Random access prepared with chunk size $chunkSize.");
                 }
                 break;
@@ -222,7 +225,7 @@ class PulseEvent implements Listener {
 
         if ($queueSize > 50) {
             for ($i = 0; $i < $queueSize; $i++) {
-                if (isset($this->memoryQueue[$i]) && $currentTime - $this->memoryQueue[$i]['timestamp'] > 30) {
+                if (isset($this->memoryQueue[$i]) && ($currentTime - $this->memoryQueue[$i]['timestamp'] > 30)) {
                     $totalFreed += $this->memoryQueue[$i]['size'];
                     unset($this->memoryQueue[$i]);
                 }
@@ -230,7 +233,7 @@ class PulseEvent implements Listener {
             $this->memoryQueue = array_values($this->memoryQueue);
         }
 
-        if ($totalFreed > 0 && ($this->config["logger"] ?? false)) {
+        if ($totalFreed > 0 && $this->config["logger"]) {
             $this->main->getLogger()->info("Garbage memory freed: " . ($totalFreed / 1024) . "KB.");
         }
     }
