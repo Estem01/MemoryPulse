@@ -1,0 +1,6 @@
+name: MemoryPulse
+version: 1.0.0
+main: MemoryPulse\Main
+api: 5.0.0
+description: An advanced plugin to dynamically optimize server memory and packet handling in PocketMine-MP.
+author: Estem0
