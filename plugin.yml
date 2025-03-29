@@ -1,6 +1,6 @@
 name: MemoryPulse
 api: [5.0.0]
 version: 1.0.0
-main: MemoryPulse\Main
+main: Estem01\MemoryPulse\Main
 description: "A plugin that dynamically optimizes server memory and packet handling."
 author: Estem01
