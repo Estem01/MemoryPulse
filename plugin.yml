@@ -4,8 +4,3 @@ version: 1.0.0
 main: MemoryPulse\Main
 description: "A plugin that dynamically optimizes server memory and packet handling."
 author: Estem01
-
-permissions:
-  memorypulse.bypass:
-    description: "Allows bypassing optimization restrictions (for debugging)."
-    default: op
