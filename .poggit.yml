@@ -1,0 +1,9 @@
+--- # Poggit-CI Manifest. Open the CI at https://poggit.pmmp.io/ci/Estem01/MemoryPulse
+build-by-default: true
+branches:
+- main
+projects:
+  MemoryPulse:
+    path: ""
+    icon: "memory.png"
+...
